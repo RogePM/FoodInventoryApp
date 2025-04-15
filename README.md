@@ -14,7 +14,11 @@ This is a full-stack application designed to help manage a food bank's inventory
 - MongoDB Atlas is created before the project to connect API to
 
 ---
-
+> **Note**: You must have a [MongoDB](https://www.mongodb.com/) account.  
+> After creating a cluster and database, update the `config.js` file in the `backend` folder with your MongoDB connection string:
+> ```js
+> export const MONGO_URL = "your-mongodb-connection-string-here";
+> ```
 ## Backend Setup
 
 1. Open **Visual Studio Code**
@@ -35,12 +39,6 @@ This is a full-stack application designed to help manage a food bank's inventory
    App is listening to port: ___
    App is connected to MongoDB
    ```
-
-> **Note**: You must have a [MongoDB](https://www.mongodb.com/) account.  
-> After creating a cluster and database, update the `config.js` file in the `backend` folder with your MongoDB connection string:
-> ```js
-> export const MONGO_URL = "your-mongodb-connection-string-here";
-> ```
 
 ---
 
