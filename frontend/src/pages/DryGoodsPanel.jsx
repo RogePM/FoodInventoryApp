@@ -1,5 +1,7 @@
-// src/components/DryGoodsPanel.jsx
+// src/pages/DryGoodsPanel.jsx
 import { Link } from 'react-router-dom';
+import React from 'react';
+
 
 const commonItems = [
   'Rice', 'Pasta', 'Canned Vegetables', 'Cereal', 'Flour', 'Beans'

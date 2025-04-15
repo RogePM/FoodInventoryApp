@@ -87,8 +87,8 @@ router.post('/', async (request, response) => {
             !request.body.quantity ||
             !request.body.expirationDate ||
             !request.body.donor ||
-            !request.body.storageLocation ||
-            !request.body.lastModified
+            !request.body.storageLocation 
+            // !request.body.lastModified
         ) {
             return response.status(400).send({ message: ' Please provide all required fields' });
         }
@@ -99,7 +99,7 @@ router.post('/', async (request, response) => {
             expirationDate: request.body.expirationDate,
             donor: request.body.donor,
             storageLocation: request.body.storageLocation,
-            lastModified: request.body.lastModified
+            lastModified: new Date()
         }
 
         const foodItem = await FoodItem.create(newFoodItem);

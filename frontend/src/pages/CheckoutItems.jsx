@@ -1,4 +1,4 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
 
 const CheckoutItems = () => {
   const categories = ['Dry Goods', 'Produce', 'Dairy', 'Meat', 'Bakery'];
@@ -8,12 +8,13 @@ const CheckoutItems = () => {
       <h1 className="text-3xl font-bold mb-8 text-blue-600">Checkout Items</h1>
       <div className="grid grid-cols-2 gap-4">
         {categories.map((category, index) => (
-          <button
+          <Link
             key={index}
+            to={`/checkout-items/dry-goods`}
             className="p-4 bg-yellow-100 rounded-lg hover:bg-yellow-200 transition"
           >
             {category}
-          </button>
+          </Link>
         ))}
       </div>
     </div>
