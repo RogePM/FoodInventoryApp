@@ -39,7 +39,6 @@ This is a full-stack application designed to help manage a food bank's inventory
    App is listening to port: ___
    App is connected to MongoDB
    ```
-
 ---
 
 ## Frontend Setup
