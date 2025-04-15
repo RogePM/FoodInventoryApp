@@ -11,6 +11,7 @@ This is a full-stack application designed to help manage a food bank's inventory
 
 - **Node.js** must be installed on your computer  
 - Download a code editor such as **Visual Studio Code**
+- MongoDB Atlas is created before the project to connect API to
 
 ---
 
