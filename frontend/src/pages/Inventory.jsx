@@ -42,6 +42,71 @@ const Inventory = () => {
   const [sort, setSort] = useState('name');
   const [showScrollTop, setShowScrollTop] = useState(false);
 
+  // update item with Edit Modal
+  const [editItem, setEditItem] = useState(null);
+  const [editForm, setEditForm] = useState({
+    name: '',
+    category: '',
+    quantity: '',
+    expirationDate: '',
+    donor: '',
+    storageLocation: '',
+  });
+  const [updating, setUpdating] = useState(false);
+  const [updateMsg, setUpdateMsg] = useState('');
+
+  const openEditModal = (item) => {
+    setEditItem(item);
+    setEditForm({
+      name: item.name,
+      category: item.category,
+      quantity: item.quantity,
+      expirationDate: item.expirationDate ? item.expirationDate.slice(0, 10) : '',
+      donor: item.donor,
+      storageLocation: item.storageLocation,
+    });
+    setUpdateMsg('');
+  };
+
+  const closeEditModal = () => {
+    setEditItem(null);
+    setUpdateMsg('');
+  };
+
+  const handleEditChange = (e) => {
+    setEditForm({ ...editForm, [e.target.name]: e.target.value });
+  };
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    setUpdating(true);
+    setUpdateMsg('');
+    try {
+      const updated = {
+        ...editForm,
+        quantity: Number(editForm.quantity),
+        lastModified: new Date().toISOString(),
+      };
+
+      if (updated.quantity === 0) {
+        // If quantity is zero, delete the item
+        await axios.delete(`http://localhost:5555/foods/${editItem._id}`);
+        setItems(items.filter(i => i._id !== editItem._id));
+        setUpdateMsg('Item deleted!');
+        setTimeout(() => closeEditModal(), 800);
+      } else {
+        // Otherwise, update as normal
+        await axios.put(`http://localhost:5555/foods/${editItem._id}`, updated);
+        setUpdateMsg('Item updated!');
+        setItems(items.map(i => i._id === editItem._id ? { ...i, ...updated } : i));
+        setTimeout(() => closeEditModal(), 800);
+      }
+    } catch (err) {
+      setUpdateMsg('Update failed.');
+    }
+    setUpdating(false);
+  };
+
+
   useEffect(() => {
     setLoading(true);
     axios
@@ -83,8 +148,10 @@ const Inventory = () => {
         new Date(a.expirationDate || 0) - new Date(b.expirationDate || 0)
       );
     }
+    // DO NOT deduplicate by name or anything else
     return data;
   }, [items, search, category, sort]);
+
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -161,6 +228,8 @@ const Inventory = () => {
                   <th className="px-6 py-4 font-semibold text-gray-700">Category</th>
                   <th className="px-6 py-4 font-semibold text-gray-700">Quantity</th>
                   <th className="px-6 py-4 font-semibold text-gray-700">Expiration Date</th>
+                  <th className="px-6 py-4 font-semibold text-gray-700">Modify</th>
+
                 </tr>
               </thead>
               <tbody>
@@ -194,6 +263,14 @@ const Inventory = () => {
                           </span>
                         )}
                       </td>
+                      <td className="px-6 py-3 border-b border-blue-100 ">
+                        <button
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow transition"
+                          onClick={() => openEditModal(item)}
+                        >
+                          Modify
+                        </button>
+                      </td>
                     </tr>
                   ))
                 )}
@@ -201,6 +278,89 @@ const Inventory = () => {
             </table>
           )}
         </div>
+        {/* edit item */}
+        {editItem && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+            <form
+              className="bg-white rounded-2xl p-8 shadow-lg w-full max-w-md space-y-4 relative"
+              onSubmit={handleEditSubmit}
+            >
+              <button
+                type="button"
+                className="absolute top-3 right-4 text-gray-400 hover:text-gray-600 text-2xl"
+                onClick={closeEditModal}
+                aria-label="Close"
+              >×</button>
+              <h2 className="text-xl font-bold mb-2 text-blue-700">Modify Item</h2>
+              <div className="space-y-2">
+                <input
+                  className="w-full px-3 py-2 rounded border border-gray-200 focus:ring-blue-200"
+                  name="name"
+                  value={editForm.name}
+                  onChange={handleEditChange}
+                  required
+                  placeholder="Name"
+                />
+                <select
+                  className="w-full px-3 py-2 rounded border border-gray-200 focus:ring-blue-200"
+                  name="category"
+                  value={editForm.category}
+                  onChange={handleEditChange}
+                  required
+                >
+                  {CATEGORY_OPTIONS.filter(c => c !== 'All').map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+                <input
+                  className="w-full px-3 py-2 rounded border border-gray-200 focus:ring-blue-200"
+                  name="quantity"
+                  type="number"
+                  min="0"
+                  value={editForm.quantity}
+                  onChange={handleEditChange}
+                  required
+                  placeholder="Quantity"
+                />
+                <input
+                  className="w-full px-3 py-2 rounded border border-gray-200 focus:ring-blue-200"
+                  name="expirationDate"
+                  type="date"
+                  value={editForm.expirationDate}
+                  onChange={handleEditChange}
+                  required
+                />
+                <input
+                  className="w-full px-3 py-2 rounded border border-gray-200 focus:ring-blue-200"
+                  name="donor"
+                  value={editForm.donor}
+                  onChange={handleEditChange}
+                  required
+                  placeholder="Donor"
+                />
+                <input
+                  className="w-full px-3 py-2 rounded border border-gray-200 focus:ring-blue-200"
+                  name="storageLocation"
+                  value={editForm.storageLocation}
+                  onChange={handleEditChange}
+                  required
+                  placeholder="Storage Location"
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold transition"
+                disabled={updating}
+              >
+                {updating ? 'Saving...' : 'Save Changes'}
+              </button>
+              {updateMsg && (
+                <div className="text-center text-sm mt-2 text-blue-600">{updateMsg}</div>
+              )}
+            </form>
+          </div>
+        )}
+
         {/* Scroll To Top Button */}
         {showScrollTop && (
           <button
@@ -214,6 +374,7 @@ const Inventory = () => {
       </div>
     </div>
   );
+
 };
 
 export default Inventory;
