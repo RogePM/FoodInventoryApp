@@ -57,7 +57,7 @@ const CheckoutItems = () => {
     setRemovingId(null);
     setRemoveQty({});
     try {
-      const res = await axios.get('http://localhost:5555/foods');
+      const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/foods`);
       // Deduplicate by normalized name
       const filtered = res.data.data.filter(item => item.category === category);
       setItems(deduplicateItems(filtered));
@@ -78,7 +78,7 @@ const CheckoutItems = () => {
     try {
       if (qtyToRemove === item.quantity) {
         // Delete the item
-        await axios.delete(`http://localhost:5555/foods/${item._id}`);
+        await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/foods/${item._id}`);
         setItems(items => items.filter(i => i._id !== item._id));
         setMessage('Item fully checked out!');
       } else {
@@ -92,7 +92,7 @@ const CheckoutItems = () => {
           storageLocation: item.storageLocation || 'N/A',
           lastModified: new Date().toISOString(),
         };
-        await axios.put(`http://localhost:5555/foods/${item._id}`, updatedItem);
+        await axios.put(`${process.env.REACT_APP_API_BASE_URL}/foods/${item._id}`, updatedItem);
         setItems(items =>
           items.map(i =>
             i._id === item._id ? { ...i, quantity: i.quantity - qtyToRemove } : i

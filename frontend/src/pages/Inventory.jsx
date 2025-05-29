@@ -89,17 +89,18 @@ const Inventory = () => {
 
       if (updated.quantity === 0) {
         // If quantity is zero, delete the item
-        await axios.delete(`http://localhost:5555/foods/${editItem._id}`);
+        await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/foods/${editItem._id}`);
         setItems(items.filter(i => i._id !== editItem._id));
         setUpdateMsg('Item deleted!');
         setTimeout(() => closeEditModal(), 800);
       } else {
         // Otherwise, update as normal
-        await axios.put(`http://localhost:5555/foods/${editItem._id}`, updated);
+        await axios.put(`${process.env.REACT_APP_API_BASE_URL}/foods/${editItem._id}`, updated);
         setUpdateMsg('Item updated!');
         setItems(items.map(i => i._id === editItem._id ? { ...i, ...updated } : i));
         setTimeout(() => closeEditModal(), 800);
       }
+
     } catch (err) {
       setUpdateMsg('Update failed.');
     }
@@ -110,7 +111,7 @@ const Inventory = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get('http://localhost:5555/foods')
+      .get(`${process.env.REACT_APP_API_BASE_URL}/foods`)
       .then((response) => {
         setItems(Array.isArray(response.data.data) ? response.data.data : []);
         setLoading(false);

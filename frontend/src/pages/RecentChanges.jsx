@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { 
+import {
   MdArrowBack,
   MdAddCircleOutline,
   MdEdit,
   MdDeleteOutline,
-  MdUpdate 
+  MdUpdate
 } from 'react-icons/md';
 
 const RecentChanges = () => {
@@ -16,7 +16,7 @@ const RecentChanges = () => {
   useEffect(() => {
     const fetchChanges = async () => {
       try {
-        const response = await axios.get('http://localhost:5555/foods/changes/recent');
+        const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/foods/changes/recent`);
         setChanges(response.data);
       } catch (error) {
         console.error('Error fetching changes:', error);
@@ -29,7 +29,7 @@ const RecentChanges = () => {
 
   const getActionIcon = (actionType) => {
     const iconClass = "text-2xl mr-2";
-    switch(actionType) {
+    switch (actionType) {
       case 'added':
         return <MdAddCircleOutline className={`${iconClass} text-green-500`} />;
       case 'updated':
@@ -92,7 +92,7 @@ const RecentChanges = () => {
           ) : (
             <div className="space-y-4">
               {changes.map((change, index) => (
-                <div 
+                <div
                   key={index}
                   className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-md hover:shadow-lg transition"
                 >

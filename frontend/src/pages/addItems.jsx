@@ -66,7 +66,7 @@ const AddItems = () => {
       return;
     }
     try {
-      await axios.post('http://localhost:5555/foods', {
+      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/foods`, {
         name: itemName,
         category: selectedCategory,
         quantity,
