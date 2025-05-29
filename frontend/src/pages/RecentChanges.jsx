@@ -16,7 +16,7 @@ const RecentChanges = () => {
   useEffect(() => {
     const fetchChanges = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/foods/changes/recent`);
+        const response = await axios.get('https://foodinventoryapp.onrender.com/foods/changes/recent');
         setChanges(response.data);
       } catch (error) {
         console.error('Error fetching changes:', error);
