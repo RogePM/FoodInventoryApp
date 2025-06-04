@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import {
@@ -47,6 +47,52 @@ const AddItems = () => {
   const [donor, setDonor] = useState('');
   const [storageLocation, setStorageLocation] = useState('');
   const [message, setMessage] = useState('');
+  const [barcodeInput, setBarcodeInput] = useState('');
+  const [barcodeMessage, setBarcodeMessage] = useState('');
+
+  useEffect(() => {
+    let inputTimer;
+    const handleKeyPress = (e) => {
+      if (modalOpen) { // Only listen when modal is open
+        // Check for Enter key (scanner submit) or normal input
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleBarcodeScan(barcodeInput);
+          setBarcodeInput('');
+        } else {
+          // Accumulate input characters
+          setBarcodeInput(prev => prev + e.key);
+        }
+      }
+    };
+    window.addEventListener('keypress', handleKeyPress);
+    return () => window.removeEventListener('keypress', handleKeyPress);
+  }, [barcodeInput, modalOpen]);
+
+  const handleBarcodeScan = (barcode) => {
+    if (!barcode) return;
+
+    // Auto-fill the item name from barcode
+    setItemName(`Item #${barcode}`);
+    setBarcodeMessage(`Scanned: ${barcode}`);
+
+    // Clear message after 2 seconds
+    setTimeout(() => setBarcodeMessage(''), 2000);
+  };
+  const barcodeSection = (
+    <div className="space-y-2">
+      <input
+        className="w-full px-3 py-2 rounded border border-gray-200"
+        value={barcodeInput}
+        onChange={(e) => setBarcodeInput(e.target.value)}
+        placeholder="Scan barcode or enter manually"
+        onKeyPress={(e) => e.key === 'Enter' && handleBarcodeScan(barcodeInput)}
+      />
+      {barcodeMessage && (
+        <div className="text-sm text-green-600">{barcodeMessage}</div>
+      )}
+    </div>
+  );
 
   const openModal = (category) => {
     setSelectedCategory(category);
@@ -65,6 +111,9 @@ const AddItems = () => {
       setMessage('Please fill all fields');
       return;
     }
+    // Use selected category or fallback to "Miscellaneous"
+    const finalCategory = selectedCategory || 'Miscellaneous';
+
     try {
       await axios.post('https://foodinventoryapp.onrender.com/foods', {
         name: itemName,
@@ -149,8 +198,10 @@ const AddItems = () => {
                 aria-label="Close"
               >×</button>
               <h2 className="text-xl font-bold mb-2 text-blue-700">
-                Add Item to {selectedCategory}
+                Add Item to {selectedCategory }
               </h2>
+              {/* Barcode input section */}
+              {barcodeSection} 
               {/* Quick pick common items */}
               {commonItems[selectedCategory] && (
                 <div className="flex flex-wrap gap-2 mb-2">
