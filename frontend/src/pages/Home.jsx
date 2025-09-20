@@ -14,52 +14,52 @@ const Home = () => {
     {
       title: 'Add Items',
       link: '/add-items',
-      icon: <MdOutlineAddBox size={48} />,
+      icon: <MdOutlineAddBox size={40} />,
       desc: 'Register new donations or food stock entries quickly.',
     },
     {
       title: 'Checkout Items',
       link: '/checkout-items',
-      icon: <MdOutlineRemoveCircle size={48} />,
+      icon: <MdOutlineRemoveCircle size={40} />,
       desc: 'Track outgoing inventory to keep records accurate.',
     },
     {
       title: 'Full Inventory List',
       link: '/inventory',
-      icon: <MdInventory size={48} />,
+      icon: <MdInventory size={40} />,
       desc: 'View, sort, and manage everything in one place.',
     },
     {
       title: 'Recent Changes',
       link: '/recent-changes',
-      icon: <MdUpdate size={48} />,
+      icon: <MdUpdate size={40} />,
       desc: 'See the latest updates made to the inventory system.',
     },
     {
       title: 'Calendar',
       link: '/calendar',
-      icon: <MdCalendarToday size={48} />,
+      icon: <MdCalendarToday size={40} />,
       desc: 'Visualize item flow and expiration dates by month.',
     },
     {
       title: 'Settings',
       link: '/settings',
-      icon: <MdSettings size={48} />,
+      icon: <MdSettings size={40} />,
       desc: 'Adjust preferences and configure system options.',
     },
   ];
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center">
+    <div className="relative min-h-screen w-full overflow-y-auto sm:overflow-y-hidden flex flex-col items-center bg-transparent">
       {/* Ambient Gradient Background */}
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-blue-100 via-white to-blue-200 z-0" />
       {/* Radial Glow */}
       <div className="pointer-events-none fixed top-1/3 left-1/2 -translate-x-1/2 w-[80vw] h-[80vw] max-w-[1000px] rounded-full bg-blue-300 opacity-10 blur-3xl z-0" />
       
       {/* Content */}
-      <div className="relative z-10 w-full px-6 py-16 flex flex-col items-center">
+      <div className="relative z-10 w-full px-4 pt-8 pb-16 flex flex-col items-center">
         {/* Header */}
-        <div className="text-center mb-20">
+        <div className="text-center mb-6">
           <h1 className="text-5xl font-bold text-gray-800 tracking-tight drop-shadow">
             Food Bank Dashboard Center
           </h1>
@@ -69,7 +69,7 @@ const Home = () => {
         </div>
 
         {/* Panels */}
-        <div className="max-w-6xl w-full mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="max-w-5xl w-full mx-auto grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 p-4">
           {panels.map((panel, idx) => (
             <Link
               to={panel.link}
